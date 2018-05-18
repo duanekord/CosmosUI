@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+@using cosmosui.Models
+@model FieldMasterInfo
+
+<br />
+<div class="row">
+    @using (Html.BeginForm())
+    {
+        @Html.Label("Select a tenant:")
+        @Html.DropDownListFor(m => m.TenantId, ViewBag.tenants as SelectList, "--Select a Tenant--")
+        @Html.ValidationMessageFor(m => m.TenantId)
+
+        @Html.Label("FieldId:")
+        @Html.TextBoxFor(m => m.FieldId)
+
+        @Html.Label("InputType:")
+        @Html.TextBoxFor(m => m.InputType)
+
+
+        <input type="submit" value="Query" />
+    }
+</div>
