@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,10 +10,23 @@ namespace cosmosui.Models
 {
     public class FieldMasterInfo
     {
-        public FieldMasterInfo(){ }
+        //Place the attribute [Dropdown] above each property that you want to show up as a dropdown.
+
+        private Dictionary<string, IEnumerable<object>> _pop;
+        private Dictionary<string, string> _store;
+
+
+        public FieldMasterInfo()
+        {
+            _pop = new Dictionary<string, IEnumerable<object>>();
+            _store = new Dictionary<string, string>();
+        }
+
+
         /// <summary>
         /// Gets or sets the field id (field name).
-        /// </summary>
+        /// </summary
+        [Dropdown]
         public string FieldId { get; set; }
 
         /// <summary>
@@ -32,7 +46,7 @@ namespace cosmosui.Models
 
         /// <summary>
         /// Gets or sets the to country code (legacy property).
-        /// </summary>
+        /// </summary
         public string ToCountryCode { get; set; }
 
         /// <summary>
@@ -125,7 +139,7 @@ namespace cosmosui.Models
         /// <summary>
         /// Gets or sets the tenant id.
         /// </summary>
-        [Required]
+        [Dropdown]
         public string TenantId { get; set; }
 
         /// <summary>
@@ -161,6 +175,7 @@ namespace cosmosui.Models
         /// <summary>
         /// Gets or sets the bank country code.
         /// </summary>
+        [Dropdown]
         public string BankCountryCode { get; set; }
 
         /// <summary>
@@ -176,6 +191,7 @@ namespace cosmosui.Models
         /// <summary>
         /// Gets or sets the beneficiary address country code.
         /// </summary>
+        [Dropdown]
         public string BeneficiaryAddressCountryCode { get; set; }
 
         /// <summary>
@@ -297,5 +313,10 @@ namespace cosmosui.Models
         /// </summary>
         // ReSharper disable once InconsistentNaming
         public string _ts { get; set; }
+
+        public Dictionary<string, IEnumerable<object>> populate_dd { get { return _pop; } }
+
+        public Dictionary<string, string> store_dd { get { return _store; } }
+
     }
 }

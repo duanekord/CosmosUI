@@ -1,25 +1,23 @@
 ﻿@{
     ViewBag.Title = "Home Page";
+    //ViewBag.Dropdowns = new Dictionary<string, IEnumerable<object>>();
 }
 
 @using cosmosui.Models
 @model FieldMasterInfo
 
 <br />
-<div class="row">
-    @using (Html.BeginForm())
-    {
-        @Html.Label("Select a tenant:")
-        @Html.DropDownListFor(m => m.TenantId, ViewBag.tenants as SelectList, "--Select a Tenant--")
-        @Html.ValidationMessageFor(m => m.TenantId)
+<br />
+@using (Html.BeginForm())
+{
+    foreach (var val in Model.populate_dd)
+    {<p>
+        @Html.Label(val.Key):
 
-        @Html.Label("FieldId:")
-        @Html.TextBoxFor(m => m.FieldId)
-
-        @Html.Label("InputType:")
-        @Html.TextBoxFor(m => m.InputType)
-
-
-        <input type="submit" value="Query" />
+        @Html.DropDownListFor(m => m.store_dd[val.Key], new SelectList(val.Value), "-- Select--")
+        <br />
+    </p>
     }
-</div>
+
+    <input type="submit" value="Query" />
+}

@@ -26,13 +26,13 @@ namespace cosmosui.Data
             //CreateCollectionIfNotExistsAsync().Wait();
         }
 
-        //Need to pass tenant as a paramter inorder to add FeedOptions PartitionKey.
-        public static async Task<IEnumerable<T>> GetItemsAsync(Expression<Func<T, bool>> predicate, string tenant)
+        public static async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> predicate)
         {
-            var options = new FeedOptions { PartitionKey = new PartitionKey(tenant) };
+            DocumentDBRepository<FieldMasterInfo>.Initialize();
+            var option = new FeedOptions { EnableCrossPartitionQuery = true };
 
             IDocumentQuery<T> query = client.CreateDocumentQuery<T>(
-                UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId), options)
+                UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId), option)
                 .Where(predicate)
                 .AsDocumentQuery();
 
@@ -45,26 +45,43 @@ namespace cosmosui.Data
             return results;
         }
 
+
         //Need to pass tenant as a paramter inorder to add FeedOptions PartitionKey.
-        public static async Task<IEnumerable<T>> GetItemsAsyncMultiParams(Expression<Func<T, bool>> predicate1, Expression<Func<T, bool>> predicate2, string tenant)
+        public static async Task<IEnumerable<T>> GetItemsAsync(Expression<Func<T, bool>> predicate, string tenant = null)
         {
-            var options = new FeedOptions { PartitionKey = new PartitionKey(tenant) };
-
-            IDocumentQuery<T> query = client.CreateDocumentQuery<T>(
-                UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId), options)
-                .Where(predicate1)
-                .Where(predicate2)
-                .AsDocumentQuery();
-
+            DocumentDBRepository<FieldMasterInfo>.Initialize();
             List<T> results = new List<T>();
-            while (query.HasMoreResults)
-            {
-                results.AddRange(await query.ExecuteNextAsync<T>());
-            }
 
+            if (tenant == null)
+            {
+                var options = new FeedOptions { EnableCrossPartitionQuery = true };
+
+                IDocumentQuery<T> query = client.CreateDocumentQuery<T>(
+                    UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId), options)
+                    .Where(predicate)
+                    .AsDocumentQuery();
+
+                while (query.HasMoreResults)
+                {
+                    results.AddRange(await query.ExecuteNextAsync<T>());
+                }
+            }
+            if (tenant != null)
+            {
+                var options = new FeedOptions { PartitionKey = new PartitionKey(tenant) };
+
+                IDocumentQuery<T> query = client.CreateDocumentQuery<T>(
+                    UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId), options)
+                    .Where(predicate)
+                    .AsDocumentQuery();
+
+                while (query.HasMoreResults)
+                {
+                    results.AddRange(await query.ExecuteNextAsync<T>());
+                }
+            }
             return results;
         }
-
 
         #region Commented out code
         //private static async Task CreateDatabaseIfNotExistsAsync()
