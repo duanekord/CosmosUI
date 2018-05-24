@@ -226,6 +226,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserProfileController.cs" />
     <Compile Include="Data\DocumentDBRepository.cs" />
+    <Compile Include="Data\GeneratePredicate.cs" />
     <Compile Include="Data\PredicateBuilder.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
