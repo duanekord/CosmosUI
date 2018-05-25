@@ -223,7 +223,8 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="AuthorizeAttribute.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\BankController.cs" />
+    <Compile Include="Controllers\TaxController.cs" />
     <Compile Include="Controllers\UserProfileController.cs" />
     <Compile Include="Data\DocumentDBRepository.cs" />
     <Compile Include="Data\GeneratePredicate.cs" />
@@ -279,12 +280,13 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Observer.cshtml" />
     <Content Include="Views\Home\Admin.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Bank\Index.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Account\SignOutCallback.cshtml" />
     <Content Include="Views\UserProfile\Index.cshtml" />
     <Content Include="Views\UserProfile\Relogin.cshtml" />
     <Content Include="Views\Home\ResultsView.cshtml" />
+    <Content Include="Views\Tax\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
