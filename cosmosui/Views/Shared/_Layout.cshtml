@@ -16,13 +16,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Cosmos FieldMaster Viewer", "Index", "Bank", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Observer", "Observer", "Home")</li>
-                    <li>@Html.ActionLink("Admin", "Admin", "Home")</li>
+                    <li>@Html.ActionLink("Bank", "Index", "Bank")</li>
+                    <li>@Html.ActionLink("Tax", "Index", "Tax")</li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

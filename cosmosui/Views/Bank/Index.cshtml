@@ -8,7 +8,7 @@
 
 <br />
 <br />
-@using (Html.BeginForm())
+@using (Html.BeginForm("Index", "Bank", FormMethod.Post))
 {
     foreach (var val in Model.populate_dd)
     {<p>
