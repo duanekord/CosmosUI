@@ -9,15 +9,14 @@
 <br />
 <br />
 
-@foreach (var fmi in Model)
-{
-    <ul>
-        <li>@fmi.FieldId</li>
-        <li>@fmi.InputType</li>
-        <li>@fmi.IsActive</li>
-        <li>@fmi.TenantId</li>
-        <li>@fmi.BeneficiaryAddressCountryCode</li>
-        <li>@fmi.HelpTextKey</li>
-
-    </ul>
-}
+@(Html.Kendo().Grid(Model)
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.FieldId);
+        columns.Bound(p => p.HelpTextKey);
+        columns.Bound(p => p.TenantId);
+        columns.Bound(p => p.BeneficiaryAddressCountryCode);
+    })
+    .Pageable()
+)
