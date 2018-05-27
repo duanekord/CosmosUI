@@ -1,0 +1,66 @@
+﻿@model cosmosui.Models.FieldMasterInfo
+@{
+    Layout = null;
+}
+
+@Html.HiddenFor(model => model._rid)
+
+<div>
+    <div style="margin-left:45px">
+
+        @Html.LabelFor(model => model.HelpTextKey)
+
+        @Html.EditorFor(model => model.HelpTextKey)
+    </div>
+    <div style="margin-left:45px">
+
+        @Html.LabelFor(model => model.InputType)
+
+        @Html.EditorFor(model => model.InputType)
+    </div>
+    <div style="margin-left:45px">
+
+        @Html.LabelFor(model => model.FromCountryCode)
+
+        @Html.EditorFor(model => model.FromCountryCode)
+    </div>
+    <div style="margin-left:45px">
+
+        @Html.LabelFor(model => model.ToCountryCode)
+
+        @Html.EditorFor(model => model.ToCountryCode)
+    </div>
+    <div style="margin-left:45px">
+
+        @Html.LabelFor(model => model.AccountTypeCode)
+
+        @Html.EditorFor(model => model.AccountTypeCode)
+    </div>
+    <div style="margin-left:45px">
+
+        @Html.LabelFor(model => model.IsRequired)
+
+        @Html.EditorFor(model => model.IsRequired)
+
+
+        @Html.LabelFor(model => model.IsReadOnly)
+
+        @Html.EditorFor(model => model.IsReadOnly)
+
+
+        @Html.LabelFor(model => model.IsActive)
+
+        @Html.EditorFor(model => model.IsActive)
+    </div>
+    <div style="margin-left:45px">
+
+        @Html.LabelFor(model => model.MinLength)
+
+        @Html.TextBoxFor(model => model.MaxLength)
+
+        @Html.EditorFor(model => model.MaxLength)
+
+    </div>
+
+
+</div>

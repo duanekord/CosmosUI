@@ -1,23 +1,69 @@
 ﻿@{
     ViewBag.Title = "Home Page";
-    //ViewBag.Dropdowns = new Dictionary<string, IEnumerable<object>>();
 }
 
 @using cosmosui.Models
-@model FieldMasterInfo
+@model IEnumerable<FieldMasterInfo>
 
 <br />
 <br />
-@using (Html.BeginForm("Index", "Bank", FormMethod.Post))
-{
-    foreach (var val in Model.populate_dd)
-    {<p>
-        @Html.Label(val.Key):
+@(Html.Kendo().Grid(Model)
+            .Name("grid")
+            .Columns(columns =>
+            {
+                columns.Bound(p => p.FieldId);
+                columns.Bound(p => p.TenantId).Filterable(ftb => ftb.UI("customDropDownList"));
+                columns.Bound(p => p.FromCountryCode);
+                columns.Bound(p => p.ToCountryCode);
+                columns.Bound(p => p.BankCountryCode);
+                columns.Command(command => { command.Edit(); }).Title("Actions");
+            })
+            .DataSource(ds => ds
+                .Ajax()
+                .ServerOperation(false)
+                .Model(m =>
+                {
+                    m.Id(f => f._ts);
+                })
+                .Update(update => update.Action("EditingCustom_Update", "Bank")))
+            .Pageable()
+            .Sortable()
+            .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("FieldMaster"))
+            .Filterable(f => f
+                .Operators(o => o
+                    .ForString(str => str
+                        .Clear()
+                        .Contains("Contains")
+                        .IsEqualTo("Is equal to")))
+                .Extra(false))
+)
 
-        @Html.DropDownListFor(m => m.store_dd[val.Key], new SelectList(val.Value), "-- Select--")
-        <br />
-    </p>
+<script>
+    function customDropDownList(element) {
+        element.kendoDropDownList({
+            dataSource: new kendo.data.DataSource({
+                data:
+                    [
+                        { Id: "ALL" },
+                        { Id: "AP"  },
+                        { Id: "CI"  },
+                    ]
+            }),
+            dataTextField: "Id",
+            dataValueField: "Id",
+            valuePrimitive: true
+        });
     }
 
-    <input type="submit" value="Query" />
-}
+        function fieldIdFilter(element) {
+        element.kendoDropDownList({
+            dataSource: {
+                transport: {
+                    read: "@Url.Action("FilterMenuCustomization_FieldId")"
+                }
+            },
+            optionLabel: "--Select Value--"
+        });
+    }
+
+</script>

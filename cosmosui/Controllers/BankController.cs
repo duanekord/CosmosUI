@@ -1,5 +1,6 @@
 ﻿using cosmosui.Data;
 using cosmosui.Models;
+using Kendo.Mvc.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +21,8 @@ namespace cosmosui.Controllers
         public async Task<ActionResult> Index()
         {
             items = await DocumentDBRepository<FieldMasterInfo>.GetAll(d => d.TenantId != null);
-
-            //populate dropdowns
-            return View(SetUp(items));
+            //SetUp(items);
+            return View(items);
         }
 
         //POST
@@ -62,20 +62,38 @@ namespace cosmosui.Controllers
             return View("~/Views/Home/ResultsView.cshtml", items);
         }
 
-        public FieldMasterInfo SetUp(IEnumerable<FieldMasterInfo> allItems)
-        {
-            FieldMasterInfo fmi = new FieldMasterInfo();
-            this.properties = fmi.GetType().GetProperties();
+        //public ActionResult FilterMenuCustomization_FieldId()
+        //{
+        //    return Json(this.items.Select(e => e.FieldId).Distinct(), JsonRequestBehavior.AllowGet);
+        //}
 
-            foreach (PropertyInfo property in properties)
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult EditingCustom_Update([DataSourceRequest] DataSourceRequest request, FieldMasterInfo product)
+        {
+            if (product != null && ModelState.IsValid)
             {
-                if (Attribute.IsDefined(property, typeof(DropdownAttribute)))
-                {
-                    fmi.populate_dd.Add(property.Name, allItems.Select(m => m.GetType().GetProperty(property.Name).GetValue(m, null)).Distinct());
-                }
             }
-            return fmi;
+
+            //return Json(products.ToDataSourceResult(request, ModelState));
+            return Json(product);
+
         }
+
+
+        //public void SetUp(IEnumerable<FieldMasterInfo> allItems)
+        //{
+        //    FieldMasterInfo fmi = new FieldMasterInfo();
+        //    this.properties = fmi.GetType().GetProperties();
+
+        //    foreach (PropertyInfo property in properties)
+        //    {
+        //        if (Attribute.IsDefined(property, typeof(DropdownAttribute)))
+        //        {
+        //            fmi.populate_dd.Add(property.Name, allItems.Select(m => m.GetType().GetProperty(property.Name).GetValue(m, null)).Distinct());
+        //        }
+        //    }
+        //    return fmi;
+        //}
 
 
     }
