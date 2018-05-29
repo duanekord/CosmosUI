@@ -1,5 +1,6 @@
 ﻿using cosmosui.Data;
 using cosmosui.Models;
+using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using System;
 using System.Collections.Generic;
@@ -21,46 +22,46 @@ namespace cosmosui.Controllers
         public async Task<ActionResult> Index()
         {
             items = await DocumentDBRepository<FieldMasterInfo>.GetAll(d => d.TenantId != null);
-            //SetUp(items);
+            SetUp(items);
             return View(items);
         }
 
         //POST
-        [HttpPost]
-        public async Task<ActionResult> Index(FieldMasterInfo fminfo)
-        {
-            //Set up
-            IEnumerable<FieldMasterInfo> items;
-            Type myType = fminfo.GetType();
-            properties = fminfo.GetType().GetProperties();
-            var predicate = PredicateBuilder.True<FieldMasterInfo>();
+        //[HttpPost]
+        //public async Task<ActionResult> Index(FieldMasterInfo fminfo)
+        //{
+        //    //Set up
+        //    IEnumerable<FieldMasterInfo> items;
+        //    Type myType = fminfo.GetType();
+        //    properties = fminfo.GetType().GetProperties();
+        //    var predicate = PredicateBuilder.True<FieldMasterInfo>();
 
-            foreach (var i in fminfo.store_dd)
-            {
-                if (i.Value != null && i.Value != "")
-                {
-                    foreach (PropertyInfo property in properties)
-                    {
-                        //var localI = i;
-                        //FieldMasterInfo localFMI = fminfo;
+        //    foreach (var i in fminfo.store_dd)
+        //    {
+        //        if (i.Value != null && i.Value != "")
+        //        {
+        //            foreach (PropertyInfo property in properties)
+        //            {
+        //                //var localI = i;
+        //                //FieldMasterInfo localFMI = fminfo;
 
-                        if (i.Key == property.Name)
-                        {
-                            var value = fminfo.store_dd[i.Key];
-                            var expr = GeneratePredicate.GenerateFieldExpression<FieldMasterInfo>(property.Name, value);
+        //                if (i.Key == property.Name)
+        //                {
+        //                    var value = fminfo.store_dd[i.Key];
+        //                    var expr = GeneratePredicate.GenerateFieldExpression<FieldMasterInfo>(property.Name, value);
 
-                            myType.GetProperty(property.Name).SetValue(fminfo, value);
-                            predicate = predicate.And(expr);
-                            break;
-                        }
-                    }
-                }
-            }
+        //                    myType.GetProperty(property.Name).SetValue(fminfo, value);
+        //                    predicate = predicate.And(expr);
+        //                    break;
+        //                }
+        //            }
+        //        }
+        //    }
 
-            items = await DocumentDBRepository<FieldMasterInfo>.GetItemsAsync(predicate, fminfo.TenantId);
+        //    items = await DocumentDBRepository<FieldMasterInfo>.GetItemsAsync(predicate, fminfo.TenantId);
 
-            return View("~/Views/Home/ResultsView.cshtml", items);
-        }
+        //    return View("~/Views/Home/ResultsView.cshtml", items);
+        //}
 
         //public ActionResult FilterMenuCustomization_FieldId()
         //{
@@ -79,22 +80,59 @@ namespace cosmosui.Controllers
 
         }
 
-
-        //public void SetUp(IEnumerable<FieldMasterInfo> allItems)
-        //{
-        //    FieldMasterInfo fmi = new FieldMasterInfo();
-        //    this.properties = fmi.GetType().GetProperties();
-
-        //    foreach (PropertyInfo property in properties)
-        //    {
-        //        if (Attribute.IsDefined(property, typeof(DropdownAttribute)))
-        //        {
-        //            fmi.populate_dd.Add(property.Name, allItems.Select(m => m.GetType().GetProperty(property.Name).GetValue(m, null)).Distinct());
-        //        }
-        //    }
-        //    return fmi;
-        //}
+        public ActionResult FilterMenuCustomization_Tenant()
+        {
+            List<string> tenantDistinct = new List<string>(){ "All", "AP", "CI"};
+            
+            tenantDistinct = tenantDistinct.Distinct().ToList();
+            return Json(tenantDistinct, JsonRequestBehavior.AllowGet);
+        }
 
 
+        public void SetUp(IEnumerable<FieldMasterInfo> allItems)
+        {
+            ViewBag.FieldIdNoFilter = allItems.GroupBy(g => g.FieldId)
+                                              .Select(t => t.First())
+                                              .Select(m =>
+                                                   new SelectListItem()
+                                                   {
+                                                       Text = m.FieldId,
+                                                       Value = m.FieldId
+
+                                                   });
+
+            ViewBag.FieldIdAP = allItems.Where(w => w.FieldId == "AP")
+                                              .GroupBy(g => g.FieldId)                                   
+                                              .Select(t => t.First())
+                                              .Select(m =>
+                                                   new SelectListItem()
+                                                   {
+                                                       Text = m.FieldId,
+                                                       Value = m.FieldId
+
+                                                   });
+
+            ViewBag.FieldIdCI = allItems.Where(w => w.FieldId == "CI")
+                                              .GroupBy(g => g.FieldId)
+                                              .Select(t => t.First())
+                                              .Select(m =>
+                                                   new SelectListItem()
+                                                   {
+                                                       Text = m.FieldId,
+                                                       Value = m.FieldId
+
+                                                   });
+
+            ViewBag.FieldIdAll = allItems.Where(w => w.FieldId == "All")
+                                              .GroupBy(g => g.FieldId)
+                                              .Select(t => t.First())
+                                              .Select(m =>
+                                                   new SelectListItem()
+                                                   {
+                                                       Text = m.FieldId,
+                                                       Value = m.FieldId
+
+                                                   });
+        }
     }
 }
