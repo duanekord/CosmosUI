@@ -2,12 +2,10 @@
 using cosmosui.Models;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace cosmosui.Controllers
@@ -82,7 +80,7 @@ namespace cosmosui.Controllers
 
         public ActionResult FilterMenuCustomization_Tenant()
         {
-            List<string> tenantDistinct = new List<string>(){ "All", "AP", "CI"};
+            List<string> tenantDistinct = new List<string>(){ "AP", "CI"};
             
             tenantDistinct = tenantDistinct.Distinct().ToList();
             return Json(tenantDistinct, JsonRequestBehavior.AllowGet);
@@ -113,17 +111,6 @@ namespace cosmosui.Controllers
                                                    });
 
             ViewBag.FieldIdCI = allItems.Where(w => w.FieldId == "CI")
-                                              .GroupBy(g => g.FieldId)
-                                              .Select(t => t.First())
-                                              .Select(m =>
-                                                   new SelectListItem()
-                                                   {
-                                                       Text = m.FieldId,
-                                                       Value = m.FieldId
-
-                                                   });
-
-            ViewBag.FieldIdAll = allItems.Where(w => w.FieldId == "All")
                                               .GroupBy(g => g.FieldId)
                                               .Select(t => t.First())
                                               .Select(m =>
