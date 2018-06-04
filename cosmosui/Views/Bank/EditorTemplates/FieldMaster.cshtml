@@ -4,8 +4,108 @@
 }
 
 @Html.HiddenFor(model => model._rid)
+<style>
+    table, th, td {
+        border: 1px solid black;
+        padding: 5px;
+    }
+</style>
 
 <div>
+    <table>
+        @foreach (var x in ViewData.ModelMetadata.Properties)
+        {
+            if(!x.PropertyName.Contains("_"))
+            {
+                var prop = x.PropertyName;
+                <tr>
+                    <td>
+
+                        @Html.LabelFor(model => prop, prop)
+                    </td>
+                    <td>
+                        @Html.Editor(prop)
+                    </td>
+                </tr>
+            }        
+        }
+        @*<tr>
+            <td>
+                @Html.LabelFor(model => model.HelpTextKey)
+            </td>
+            <td>
+                @Html.EditorFor(model => model.HelpTextKey)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.InputType)
+            </td>
+            <td>
+                @Html.EditorFor(model => model.InputType)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.FromCountryCode)
+            </td>
+            <td>
+                @Html.EditorFor(model => model.FromCountryCode)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.AccountTypeCode)
+            </td>
+            <td>
+                @Html.EditorFor(model => model.AccountTypeCode)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.IsRequired)
+            </td>
+            <td>
+                @Html.EditorFor(model => model.IsRequired)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.IsReadOnly)
+            </td>
+            <td>
+                @Html.EditorFor(model => model.IsReadOnly)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.IsActive)
+            </td>
+            <td>
+                @Html.EditorFor(model => model.IsActive)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.MinLength)
+            </td>
+            <td>
+                @Html.EditorFor(model => model.MinLength)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.MaxLength)
+            </td>
+            <td>
+                @Html.EditorFor(model => model.MaxLength)
+            </td>
+        </tr>*@
+    </table>
+</div>
+
+
+@*<div>
     <div style="margin-left:45px">
 
         @Html.LabelFor(model => model.HelpTextKey)
@@ -63,4 +163,4 @@
     </div>
 
 
-</div>
+</div>*@
