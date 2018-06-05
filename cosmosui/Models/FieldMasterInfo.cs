@@ -314,9 +314,5 @@ namespace cosmosui.Models
         // ReSharper disable once InconsistentNaming
         public string _ts { get; set; }
 
-        public Dictionary<string, IEnumerable<object>> populate_dd { get { return _pop; } }
-
-        public Dictionary<string, string> store_dd { get { return _store; } }
-
     }
 }

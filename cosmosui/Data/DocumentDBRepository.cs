@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace cosmosui.Data
@@ -81,6 +82,27 @@ namespace cosmosui.Data
                 }
             }
             return results;
+        }
+
+        public static async Task<HttpStatusCode> UpdateSingleDoc(FieldMasterInfo fmi)
+        {
+            DocumentDBRepository<FieldMasterInfo>.Initialize();
+
+            var options = new RequestOptions { PartitionKey = new PartitionKey(fmi.TenantId) };
+            try
+            {
+
+                Uri docURI = UriFactory.CreateDocumentUri(DatabaseId, CollectionId, fmi.id);
+                var document = await client.ReadDocumentAsync<FieldMasterInfo>(docURI, options);
+                var updatedDoc = await client.ReplaceDocumentAsync(docURI, fmi);
+
+                return updatedDoc.StatusCode;
+
+            }
+            catch (DocumentQueryException e)
+            {
+                return e.StatusCode.Value;
+            }
         }
 
         #region Commented out code

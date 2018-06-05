@@ -4,74 +4,81 @@
 
 @using cosmosui.Models
 @model IEnumerable<FieldMasterInfo>
+
 <div class="btn-group btn-group-inline">
 
     <h5 style="margin-top: 2em;">Tenant:</h5>
     @(Html.Kendo().DropDownList()
-                .Name("tenantPicker")
-                .OptionLabel("--Select--")
-                .DataSource(ds => ds
-                    .Read(r => r.Action("FilterMenuCustomization_Tenant", "Bank")))
-                .Events(e => e
-                    .Change("changeOffering"))
+                            .Name("tenantPicker")
+                            .OptionLabel("--Select--")
+                            .DataSource(ds => ds
+                                .Read(r => r.Action("FilterMenuCustomization_Tenant", "Bank")))
+                            .Events(e => e
+                                .Change("changeOffering"))
     )
 </div>
 <div class="btn-group btn-group-inline">
     <h5 style="margin-top: 2em;">FieldId:</h5>
     @(Html.Kendo().DropDownList()
-                .Name("fieldIdPicker")
-                .OptionLabel("--Select--")
-                .DataValueField("Text")
-                .DataTextField("Value")
-                .BindTo((System.Collections.IEnumerable)ViewBag.FieldIdNoFilter)
-                .HtmlAttributes(new { style = "width:280px" })
-                .Events(e => e
-                    .Change("changeFieldID"))
+                            .Name("fieldIdPicker")
+                            .OptionLabel("--Select--")
+                            .DataValueField("Text")
+                            .DataTextField("Value")
+                            .BindTo((System.Collections.IEnumerable)ViewBag.FieldIdNoFilter)
+                            .HtmlAttributes(new { style = "width:280px" })
+                            .Events(e => e
+                                .Change("changeFieldID"))
     )
 </div>
 <div class="btn-group btn-group-inline" style="margin-top: 4em;">
     @(Html.Kendo().Button()
-                    .Name("clearFilter")
-                    .Tag("a")
-                    .Icon("filter-clear")
-                    .Content("Clear Filters")
-                    .HtmlAttributes(new { type = "button", @class = "k-primary" })
-                    .Events(e => e
-                        .Click("clearFilters"))
+                            .Name("clearFilter")
+                            .Tag("a")
+                            .Icon("filter-clear")
+                            .Content("Clear Filters")
+                            .HtmlAttributes(new { type = "button", @class = "k-primary" })
+                            .Events(e => e
+                                .Click("clearFilters"))
     )
 </div>
 
 <br />
 <br />
 @(Html.Kendo().Grid(Model)
-            .Name("grid")
-            .Columns(columns =>
-            {
-                columns.Bound(p => p.FieldId);
-                columns.Bound(p => p.TenantId).Filterable(ftb => ftb.UI("customDropDownList"));
-                columns.Bound(p => p.FromCountryCode);
-                columns.Bound(p => p.ToCountryCode);
-                columns.Bound(p => p.BankCountryCode);
-                columns.Command(command => { command.Edit(); }).Title("Actions");
-            })
-            .DataSource(ds => ds
-                .Ajax()
-                .ServerOperation(false)
-                .Model(m =>
-                {
-                    m.Id(f => f._ts);
-                })
-                .Update(update => update.Action("EditingCustom_Update", "Bank")))
-            .Pageable()
-            .Sortable()
-            .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("FieldMaster"))
-            .Filterable(f => f
-                .Operators(o => o
-                    .ForString(str => str
-                        .Clear()
-                        .Contains("Contains")
-                        .IsEqualTo("Is equal to")))
-                .Extra(false))
+                    .Name("grid")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(p => p.FieldId);
+                        columns.Bound(p => p.TenantId).Filterable(ftb => ftb.UI("customDropDownList"));
+                        columns.Bound(p => p.FromCountryCode);
+                        columns.Bound(p => p.ToCountryCode);
+                        columns.Bound(p => p.BankCountryCode);
+                        columns.Command(command => { command.Edit(); }).Title("Actions");
+                    })
+                    .DataSource(ds => ds
+                        .Ajax()
+                        .ServerOperation(false)
+                        .Model(m =>
+                        {
+                            m.Id(f => f.id);
+                        })
+                        .Update(update => update.Action("EditingCustom_Update", "Bank")))
+                    .Pageable()
+                    .Sortable()
+                    .Editable(editable => editable
+                        .Mode(GridEditMode.PopUp)
+                        .TemplateName("FieldMaster")
+                        .Window(w => w
+                            .Title("Edit Details")
+                            .Name("editWindow")
+                            .Width(900)))
+                    .Filterable(f => f
+                        .Operators(o => o
+                            .ForString(str => str
+                                .Clear()
+                                .Contains("Contains")
+                                .IsEqualTo("Is equal to")))
+                        .Extra(false))
 )
 
 <script>
@@ -122,18 +129,6 @@
 
         // finally, the currentFilters array is applied back to the Grid, using "and" logic.
         gridData.dataSource.filter({ logic: "and", filters: currentGridFilters });
-
-        @*$.ajax({
-            // edit to add steve's suggestion.
-            //url: "/ControllerName/ActionName",
-            url: @Url.Action("ActionName", "Bank"),
-            data: val,
-            success: function (data) {
-                // your data could be a View or Json or what ever you returned in your action method
-                // parse your data here
-                alert(data);
-            }
-        });*@
 
     }
 
@@ -193,6 +188,4 @@
         var slPicker = $("#tenantPicker").val("").data("kendoDropDownList").text("--Select--");
         var offeringPicker = $("#fieldIdPicker").val("").data("kendoDropDownList").text("--Select--");
     }
-
-
 </script>

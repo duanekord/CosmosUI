@@ -5,7 +5,7 @@ namespace cosmosui.Data
 {
     public class GeneratePredicate
     {
-        public static Expression<Func<T, bool>> GenerateFieldExpression<T>(string fieldName, string value)
+        public static Expression<Func<T, bool>> GenerateEqualFieldExpression<T>(string fieldName, string value)
         {
             var parameter = Expression.Parameter(typeof(T), "m");
             // m
