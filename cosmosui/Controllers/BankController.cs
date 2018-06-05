@@ -26,14 +26,14 @@ namespace cosmosui.Controllers
 
         [AcceptVerbs(HttpVerbs.Post)]
         public async Task<ActionResult> EditingCustom_Update([DataSourceRequest] DataSourceRequest request, 
-                [Bind(Prefix = "models")]IEnumerable<FieldMasterInfo> product)
+                FieldMasterInfo product)
         {
             
             if (product != null && ModelState.IsValid)
             {
-                await DocumentDBRepository<FieldMasterInfo>.UpdateSingleDoc(product.FirstOrDefault());
+                await DocumentDBRepository<FieldMasterInfo>.UpdateSingleDoc(product);
             }
-            return Json(product.ToDataSourceResult(request, ModelState));
+            return Json(new[] { product }.ToDataSourceResult(request, ModelState));
 
         }
 
