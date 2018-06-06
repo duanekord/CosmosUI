@@ -17,11 +17,17 @@ namespace cosmosui.Controllers
         private IEnumerable<FieldMasterInfo> items;
 
         // GET: Bank
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            items = await DocumentDBRepository<FieldMasterInfo>.GetAll(d => d.TenantId != null);
-            SetUp(items);
-            return View(items);
+            return View();
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult ReadItems([DataSourceRequest] DataSourceRequest request, string tenant)
+        {
+            items = DocumentDBRepository<FieldMasterInfo>.GetAll(GeneratePredicate.GenerateEqualFieldExpression<FieldMasterInfo>("TenantId", tenant), tenant);
+
+            return Json(items.ToDataSourceResult(request));
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
@@ -43,20 +49,6 @@ namespace cosmosui.Controllers
             
             tenantDistinct = tenantDistinct.Distinct().ToList();
             return Json(tenantDistinct, JsonRequestBehavior.AllowGet);
-        }
-
-
-        public void SetUp(IEnumerable<FieldMasterInfo> allItems)
-        {
-            ViewBag.FieldIdNoFilter = allItems.GroupBy(g => g.FieldId)
-                                              .Select(t => t.First())
-                                              .Select(m =>
-                                                   new SelectListItem()
-                                                   {
-                                                       Text = m.FieldId,
-                                                       Value = m.FieldId
-
-                                                   });
         }
     }
 }

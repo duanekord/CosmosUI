@@ -1,10 +1,12 @@
 ﻿using cosmosui.Models;
+using Microsoft.ApplicationInsights;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
@@ -18,6 +20,8 @@ namespace cosmosui.Data
         private static readonly string CollectionId = ConfigurationManager.AppSettings["collection"];
         private static DocumentClient client;
 
+        private static readonly TelemetryClient _telemetry = new TelemetryClient();
+
         public static void Initialize()
         {
             client = new DocumentClient(new Uri(ConfigurationManager.AppSettings["endpoint"]), ConfigurationManager.AppSettings["authKey"], null, ConsistencyLevel.BoundedStaleness);
@@ -27,25 +31,24 @@ namespace cosmosui.Data
             //CreateCollectionIfNotExistsAsync().Wait();
         }
 
-        public static async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> predicate)
+        public static IEnumerable<T> GetAll(Expression<Func<T, bool>> predicate, string tenant)
         {
             DocumentDBRepository<FieldMasterInfo>.Initialize();
-            var option = new FeedOptions { EnableCrossPartitionQuery = true };
-
-            IDocumentQuery<T> query = client.CreateDocumentQuery<T>(
-                UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId), option)
-                .Where(predicate)
-                .AsDocumentQuery();
-
-            List<T> results = new List<T>();
-            while (query.HasMoreResults)
+            var option = new FeedOptions { PartitionKey = new PartitionKey(tenant), MaxItemCount = 1000, DisableRUPerMinuteUsage = true };
+            try
             {
-                results.AddRange(await query.ExecuteNextAsync<T>());
+                return client.CreateDocumentQuery<T>(
+                    UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId), option)
+                    .Where(predicate)
+                    .ToList();
+
             }
-
-            return results;
+            catch(DocumentQueryException e)
+            {
+                _telemetry.TrackException(e);
+                return null;
+            }
         }
-
 
         //Need to pass tenant as a paramter inorder to add FeedOptions PartitionKey.
         public static async Task<IEnumerable<T>> GetItemsAsync(Expression<Func<T, bool>> predicate, string tenant = null)
