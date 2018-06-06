@@ -96,63 +96,6 @@
             optionLabel: "--Select Value--"
         });
     }
-
-    function changeFieldID() {
-        var val = $("#fieldIdPicker").val();
-
-        var filterField = "FieldId";
-
-        // get the kendoGrid element.
-        var gridData = $("#grid").data("kendoGrid");
-
-        // get currently applied filters from the Grid.
-        var currGridFilterObj = gridData.dataSource.filter();
-
-        // get current set of filters, which is supposed to be array.
-        // if the oject we obtained above is null/undefined, set this to an empty array
-        var currentGridFilters = currGridFilterObj ? currGridFilterObj.filters : [];
-
-        // iterate over current filters array. if a filter for "filterField" is already
-        // defined, remove it from the array
-        // once an entry is removed, we stop looking at the rest of the array.
-        if (currentGridFilters && currentGridFilters.length > 0) {
-            for (var i = 0; i < currentGridFilters.length; i++) {
-                if (currentGridFilters[i].field == filterField) {
-                    currentGridFilters.splice(i, 1);
-                    break;
-                }
-            }
-        }
-
-        currentGridFilters.push({ field: filterField, operator: "eq", value: val });
-
-        // finally, the currentFilters array is applied back to the Grid, using "and" logic.
-        gridData.dataSource.filter({ logic: "and", filters: currentGridFilters });
-    }
-
-    function clearFilters() {
-        var gridData = $("#grid").data("kendoGrid");
-
-        // get currently applied filters from the Grid.
-        var currGridFilterObj = gridData.dataSource.filter();
-
-        // get current set of filters, which is supposed to be array.
-        // if the oject we obtained above is null/undefined, set this to an empty array
-        var currentGridFilters = currGridFilterObj ? currGridFilterObj.filters : [];
-
-        // iterate over current filters array. if a filter for "filterField" is already
-        // defined, remove it from the array
-        // once an entry is removed, we stop looking at the rest of the array.
-        for (var i = 0; i <= currentGridFilters.length; i++) {
-            currentGridFilters.splice(i);
-        }
-
-        // finally, the currentFilters array is applied back to the Grid, using "and" logic.
-        gridData.dataSource.filter({ logic: "and", filters: currentGridFilters });
-
-        var slPicker = $("#tenantPicker").val("").data("kendoDropDownList").text("--Select--");
-        var offeringPicker = $("#fieldIdPicker").val("").data("kendoDropDownList").text("--Select--");
-    }
 </script>
 <style>
     .k-readonly {
