@@ -8,52 +8,52 @@
 
     <h5 style="margin-top: 2em;">Tenant:</h5>
     @(Html.Kendo().DropDownList()
-                            .Name("tenantPicker")
-                            .OptionLabel("--Select--")
-                            .DataSource(ds => ds
-                                .Read(r => r.Action("FilterMenuCustomization_Tenant", "Bank")))
-                            .Events(e => e
-                                .Change("changeOffering"))
+        .Name("tenantPicker")
+        .OptionLabel("--Select--")
+        .DataSource(ds => ds
+            .Read(r => r.Action("FilterMenuCustomization_Tenant", "Bank")))
+        .Events(e => e
+            .Change("changeTenant"))
     )
 </div>
 <br />
 <br />
 @(Html.Kendo().Grid<FieldMasterInfo>()
-                    .Name("grid")
-                    .AutoBind(false)
-                    .Columns(columns =>
-                    {
-                        columns.Bound(p => p.FieldId);
-                        columns.Bound(p => p.TenantId).Filterable(ftb => ftb.UI("customDropDownList"));
-                        columns.Bound(p => p.FromCountryCode);
-                        columns.Bound(p => p.ToCountryCode);
-                        columns.Bound(p => p.BankCountryCode);
-                        columns.Command(command => { command.Edit(); }).Title("Actions");
-                    })
-                    .Pageable()
-                    .Sortable()
-                    .Editable(editable => editable
-                        .Mode(GridEditMode.PopUp)
-                        .TemplateName("FieldMaster")
-                        .Window(w => w
-                            .Title("Edit Details")
-                            .Name("editWindow")
-                            .Width(900)))
-                    .Filterable(f => f
-                        .Operators(o => o
-                            .ForString(str => str
-                                .Clear()
-                                .Contains("Contains")
-                                .IsEqualTo("Is equal to")))
-                        .Extra(false))
-                    .DataSource(ds => ds
-                        .Ajax()
-                        .Model(m =>
-                        {
-                            m.Id(f => f.id);
-                        })
-                        .Update(update => update.Action("EditingCustom_Update", "Bank"))
-                        .Read(read => read.Action("ReadItems", "Bank").Data("additionalData")))
+        .Name("grid")
+        .AutoBind(false)
+        .Columns(columns =>
+        {
+            columns.Bound(p => p.FieldId).Filterable(ftb => ftb.UI("fieldIdFilter"));
+            columns.Bound(p => p.TenantId).Filterable(ftb => ftb.UI("customDropDownList"));
+            columns.Bound(p => p.FromCountryCode);
+            columns.Bound(p => p.ToCountryCode);
+            columns.Bound(p => p.BankCountryCode);
+            columns.Command(command => { command.Edit(); }).Title("Actions");
+        })
+        .Pageable()
+        .Sortable()
+        .Editable(editable => editable
+            .Mode(GridEditMode.PopUp)
+            .TemplateName("FieldMaster")
+            .Window(w => w
+                .Title("Edit Details")
+                .Name("editWindow")
+                .Width(900)))
+        .Filterable(f => f
+            .Operators(o => o
+                .ForString(str => str
+                    .Clear()
+                    .Contains("Contains")
+                    .IsEqualTo("Is equal to")))
+            .Extra(false))
+        .DataSource(ds => ds
+            .Ajax()
+            .Model(m =>
+            {
+                m.Id(f => f.id);
+            })
+            .Update(update => update.Action("EditingCustom_Update", "Bank"))
+            .Read(read => read.Action("ReadItems", "Bank").Data("additionalData")))
 )
 
 <script>
@@ -62,7 +62,6 @@
             dataSource: new kendo.data.DataSource({
                 data:
                     [
-                        { Id: "ALL" },
                         { Id: "AP" },
                         { Id: "CI" },
                     ]
@@ -73,45 +72,29 @@
         });
     }
 
-    var ddlItem;
+    var tenantId;
     function additionalData(e) {
-        return { tenant: ddlItem }
+        return { tenant: tenantId }
     }
 
-    function changeOffering(e) {
-        ddlItem = this.value();
+    function changeTenant(e) {
+        tenantId = this.value();
         var grid = $("#grid").data("kendoGrid");
         grid.dataSource.read();
-       
+    }
 
-        //var filterField = "TenantId";
+    function fieldIdFilter(element) {
+        element.kendoDropDownList({
+            dataSource: {
+                transport: {
+                    read: "@Url.Action("FilterMenuCustomization_FieldId")"
 
-        //// get the kendoGrid element.
-        //var gridData = $("#grid").data("kendoGrid");
-
-        //// get currently applied filters from the Grid.
-        //var currGridFilterObj = gridData.dataSource.filter();
-
-        //// get current set of filters, which is supposed to be array.
-        //// if the oject we obtained above is null/undefined, set this to an empty array
-        //var currentGridFilters = currGridFilterObj ? currGridFilterObj.filters : [];
-
-        //// iterate over current filters array. if a filter for "filterField" is already
-        //// defined, remove it from the array
-        //// once an entry is removed, we stop looking at the rest of the array.
-        //if (currentGridFilters && currentGridFilters.length > 0) {
-        //    for (var i = 0; i < currentGridFilters.length; i++) {
-        //        if (currentGridFilters[i].field == filterField) {
-        //            currentGridFilters.splice(i, 1);
-        //            break;
-        //        }
-        //    }
-        //}
-
-        //currentGridFilters.push({ field: filterField, operator: "eq", value: val });
-
-        //// finally, the currentFilters array is applied back to the Grid, using "and" logic.
-        //gridData.dataSource.filter({ logic: "and", filters: currentGridFilters });
+                }
+            },
+            dataTextField: "Text",
+            dataValueField: "Value",
+            optionLabel: "--Select Value--"
+        });
     }
 
     function changeFieldID() {
@@ -171,3 +154,8 @@
         var offeringPicker = $("#fieldIdPicker").val("").data("kendoDropDownList").text("--Select--");
     }
 </script>
+<style>
+    .k-readonly {
+        color: gray;
+    }
+</style>

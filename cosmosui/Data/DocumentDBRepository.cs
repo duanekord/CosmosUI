@@ -34,7 +34,7 @@ namespace cosmosui.Data
         public static IEnumerable<T> GetAll(Expression<Func<T, bool>> predicate, string tenant)
         {
             DocumentDBRepository<FieldMasterInfo>.Initialize();
-            var option = new FeedOptions { PartitionKey = new PartitionKey(tenant), MaxItemCount = 1000, DisableRUPerMinuteUsage = true };
+            var option = new FeedOptions { PartitionKey = new PartitionKey(tenant), MaxItemCount = 3000, DisableRUPerMinuteUsage = true };
             try
             {
                 return client.CreateDocumentQuery<T>(

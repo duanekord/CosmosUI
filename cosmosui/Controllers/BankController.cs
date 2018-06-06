@@ -14,7 +14,7 @@ namespace cosmosui.Controllers
     [Authorize]
     public class BankController : Controller
     {
-        private IEnumerable<FieldMasterInfo> items;
+        private static IEnumerable<FieldMasterInfo> items;
 
         // GET: Bank
         public ActionResult Index()
@@ -26,7 +26,6 @@ namespace cosmosui.Controllers
         public ActionResult ReadItems([DataSourceRequest] DataSourceRequest request, string tenant)
         {
             items = DocumentDBRepository<FieldMasterInfo>.GetAll(GeneratePredicate.GenerateEqualFieldExpression<FieldMasterInfo>("TenantId", tenant), tenant);
-
             return Json(items.ToDataSourceResult(request));
         }
 
@@ -49,6 +48,23 @@ namespace cosmosui.Controllers
             
             tenantDistinct = tenantDistinct.Distinct().ToList();
             return Json(tenantDistinct, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult FilterMenuCustomization_FieldId()
+        {
+           var e =  items.GroupBy(g => g.FieldId)
+                                          .Select(t => t.First())
+                                          .Select(m =>
+                                               new SelectListItem()
+                                               {
+                                                   Text = m.FieldId,
+                                                   Value = m.FieldId
+
+                                               });
+
+
+            e.Distinct();
+            return Json(e, JsonRequestBehavior.AllowGet);
         }
     }
 }
