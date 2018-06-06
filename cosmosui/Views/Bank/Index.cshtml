@@ -25,9 +25,9 @@
         {
             columns.Bound(p => p.FieldId).Filterable(ftb => ftb.UI("fieldIdFilter"));
             columns.Bound(p => p.TenantId).Filterable(ftb => ftb.UI("customDropDownList"));
-            columns.Bound(p => p.FromCountryCode);
-            columns.Bound(p => p.ToCountryCode);
-            columns.Bound(p => p.BankCountryCode);
+            columns.Bound(p => p.FromCountryCode).Filterable(ftb => ftb.UI("fromCCFilter"));
+            columns.Bound(p => p.ToCountryCode).Filterable(ftb => ftb.UI("toCCFilter"));
+            columns.Bound(p => p.BankCountryCode).Filterable(ftb => ftb.UI("bankCCFilter"));
             columns.Command(command => { command.Edit(); }).Title("Actions");
         })
         .Pageable()
@@ -96,9 +96,45 @@
             optionLabel: "--Select Value--"
         });
     }
-</script>
-<style>
-    .k-readonly {
-        color: gray;
+    function fromCCFilter(element) {
+        element.kendoDropDownList({
+            dataSource: {
+                transport: {
+                    read: "@Url.Action("FilterMenuCustomization_FromCC")"
+
+                }
+            },
+            dataTextField: "Text",
+            dataValueField: "Value",
+            optionLabel: "--Select Value--"
+        });
     }
-</style>
+    function toCCFilter(element) {
+        element.kendoDropDownList({
+            dataSource: {
+                transport: {
+                    read: "@Url.Action("FilterMenuCustomization_ToCC")"
+
+                }
+            },
+            dataTextField: "Text",
+            dataValueField: "Value",
+            optionLabel: "--Select Value--"
+        });
+    }
+    function bankCCFilter(element) {
+    element.kendoDropDownList({
+        dataSource: {
+            transport: {
+                read: "@Url.Action("FilterMenuCustomization_BankCC")"
+
+            }
+        },
+        dataTextField: "Text",
+        dataValueField: "Value",
+        optionLabel: "--Select Value--"
+    });
+    }
+
+
+</script>

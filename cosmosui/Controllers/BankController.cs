@@ -50,6 +50,7 @@ namespace cosmosui.Controllers
             return Json(tenantDistinct, JsonRequestBehavior.AllowGet);
         }
 
+        #region Grid Filter Customizations
         public ActionResult FilterMenuCustomization_FieldId()
         {
            var e =  items.GroupBy(g => g.FieldId)
@@ -60,11 +61,63 @@ namespace cosmosui.Controllers
                                                    Text = m.FieldId,
                                                    Value = m.FieldId
 
-                                               });
+                                               }).OrderBy(m => m.Text);
 
 
             e.Distinct();
             return Json(e, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult FilterMenuCustomization_FromCC()
+        {
+            var e = items.GroupBy(g => g.FromCountryCode)
+                                           .Select(t => t.First())
+                                           .Select(m =>
+                                                new SelectListItem()
+                                                {
+                                                    Text = m.FromCountryCode,
+                                                    Value = m.FromCountryCode
+
+                                                }).OrderBy(m => m.Text);
+
+
+            e.Distinct();
+            return Json(e, JsonRequestBehavior.AllowGet);
+        }
+
+
+        public ActionResult FilterMenuCustomization_ToCC()
+        {
+            var e = items.GroupBy(g => g.ToCountryCode)
+                                           .Select(t => t.First())
+                                           .Select(m =>
+                                                new SelectListItem()
+                                                {
+                                                    Text = m.ToCountryCode,
+                                                    Value = m.ToCountryCode
+
+                                                }).OrderBy(m => m.Text);
+
+
+            e.Distinct();
+            return Json(e, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult FilterMenuCustomization_BankCC()
+        {
+            var e = items.GroupBy(g => g.BankCountryCode)
+                                           .Select(t => t.First())
+                                           .Select(m =>
+                                                new SelectListItem()
+                                                {
+                                                    Text = m.BankCountryCode,
+                                                    Value = m.BankCountryCode
+
+                                                }).OrderBy(m => m.Text);
+
+            return Json(e, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
     }
 }
